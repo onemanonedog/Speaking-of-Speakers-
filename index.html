@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Speaking of Speakers</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;margin:0;background:#0f1115;color:#e6e6e6}
+    header{padding:24px 16px;text-align:center;border-bottom:1px solid #23252c}
+    h1{margin:0;font-size:28px}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+    .card{background:#151821;border:1px solid #23252c;border-radius:16px;padding:16px}
+    .card h3{margin:8px 0 4px;font-size:18px}
+    .fee{opacity:.8;font-size:14px;margin:0 0 8px}
+    .bio{font-size:14px;line-height:1.4;opacity:.9}
+    .topbar{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+    input,select,button{background:#0f1115;color:#e6e6e6;border:1px solid #23252c;border-radius:10px;padding:10px}
+    input{flex:1;min-width:200px}
+    button{cursor:pointer}
+    .badge{font-size:12px;opacity:.8}
+    footer{border-top:1px solid #23252c;opacity:.7;text-align:center;padding:20px}
+    a.btn{display:inline-block;margin-top:10px;padding:8px 10px;border:1px solid #2e7df6;border-radius:10px;text-decoration:none}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Speaking of Speakers</h1>
+    <div class="badge">Book top-tier speakers for your event</div>
+  </header>
+
+  <div class="wrap">
+    <div class="topbar">
+      <input id="q" placeholder="Search speakers or topics…" />
+      <select id="fee">
+        <option value="">All fees</option>
+        <option value="under25">Under $25k</option>
+        <option value="25to100">$25k–$100k</option>
+        <option value="100plus">$100k+</option>
+      </select>
+      <button id="clear">Clear</button>
+    </div>
+
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <footer>© Speaking of Speakers</footer>
+
+  <script>
+    const speakers = [
+      { name: "Christmas Blizzard", fee: 25000, topic: "Faith • Resilience • Life-saving moments",
+        bio: "Veteran speaker & author of “The Great Truth: God Is Real.” Real-world stories that move audiences to action.",
+        link: "#" },
+      { name: "Tony Robbins", fee: 500000, topic: "Peak performance • Business • Life strategy",
+        bio: "World-renowned strategist and coach to leaders and athletes.",
+        link: "#" },
+      { name: "Brené Brown", fee: 150000, topic: "Courage • Vulnerability • Leadership",
+        bio: "Research professor known for empowering talks on brave leadership.",
+        link: "#" },
+      { name: "Simon Sinek", fee: 120000, topic: "Leadership • Purpose • Culture",
+        bio: "Best known for “Start With Why” and practical leadership frameworks.",
+        link: "#" },
+      { name: "Mel Robbins", fee: 90000, topic: "Motivation • Habits • Confidence",
+        bio: "No-nonsense tools for action and personal change.",
+        link: "#" },
+      { name: "Eric Thomas", fee: 60000, topic: "Grit • Education • Motivation",
+        bio: "High-energy keynotes that ignite students and teams.",
+        link: "#" }
+    ];
+
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const fee = document.getElementById('fee');
+    const clear = document.getElementById('clear');
+
+    function render(list){
+      grid.innerHTML = '';
+      list.forEach(s=>{
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `
+          <h3>${s.name}</h3>
+          <p class="fee">$${s.fee.toLocaleString()} • ${s.topic}</p>
+          <p class="bio">${s.bio}</p>
+          <a class="btn" href="${s.link}">Request booking</a>
+        `;
+        grid.appendChild(el);
+      });
+    }
+
+    function filter(){
+      const term = q.value.toLowerCase();
+      const feeVal = fee.value;
+      let list = speakers.filter(s =>
+        s.name.toLowerCase().includes(term) ||
+        s.topic.toLowerCase().includes(term) ||
+        s.bio.toLowerCase().includes(term)
+      );
+      if(feeVal==='under25') list = list.filter(s=>s.fee<25000);
+      if(feeVal==='25to100') list = list.filter(s=>s.fee>=25000 && s.fee<=100000);
+      if(feeVal==='100plus') list = list.filter(s=>s.fee>100000);
+      render(list);
+    }
+
+    q.addEventListener('input', filter);
+    fee.addEventListener('change', filter);
+    clear.addEventListener('click', ()=>{ q.value=''; fee.value=''; filter(); });
+
+    render(speakers);
+  </script>
+</body>
+</html>
